@@ -7,5 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Incident extends Model
 {
     //
-    public $timestamps = false;
+    protected $fillable = [
+        'resource_id',
+        'reported_by',
+        'description',
+        'priority',
+        'status'
+    ];
+
+    public function resource()
+    {
+        return $this->belongsTo(Resource::class);
+    }
 }
