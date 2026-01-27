@@ -65,6 +65,10 @@ class ResourceController extends Controller
     public function edit(string $id)
     {
         //
+        $resource = Resource::findOrFail($id);
+        $categories = Category::all();
+        $managers = User::where('is_active', true)->get();
+        return view('resources.edit', compact('resource', 'categories', 'managers'));
     }
 
     /**
@@ -73,6 +77,18 @@ class ResourceController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'manager_id' => 'required|exists:users,id',
+            'specifications' => 'nullable|array',
+            'is_active' => 'boolean',
+        ]);
+
+        $resource = Resource::findOrFail($id);
+        $resource->update($validatedData);
+
+        return redirect()->route('resources.index')->with('success', 'Resource updated successfully');
     }
 
     /**
@@ -81,5 +97,8 @@ class ResourceController extends Controller
     public function destroy(string $id)
     {
         //
+        $resource = Resource::findOrFail($id);
+        $resource->delete();
+        return redirect()->route('resources.index')->with('success', 'Resource deleted successfully');
     }
 }
