@@ -19,4 +19,9 @@ class Incident extends Model
     {
         return $this->belongsTo(Resource::class);
     }
+
+    public function reporter()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
