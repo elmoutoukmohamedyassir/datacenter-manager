@@ -12,10 +12,12 @@ class Resource extends Model
         'specifications' => 'array'
     ];
     protected $fillable = ['name', 'category_id', 'manager_id', 'specifications', 'is_active'];
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
-    public function manager() {
+    public function manager()
+    {
         return $this->belongsTo(User::class, 'manager_id');
     }
 }
