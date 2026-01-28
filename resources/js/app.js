@@ -1,3 +1,7 @@
-// No external JavaScript libraries used
-// All functionality is implemented using vanilla JavaScript in Blade templates
+import './bootstrap';
 
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();
