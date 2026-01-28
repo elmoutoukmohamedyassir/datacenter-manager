@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Reference - Reservation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #4338ca;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --dark-color: #1e293b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: #f8fafc;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 1.125rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .color-box {
+            height: 100px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.375rem 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border-radius: 50px;
+            margin: 0.5rem;
+        }
+
+        .badge-pending {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+        }
+
+        .badge-approved {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .badge-active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .badge-finished {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+        }
+
+        .badge-refused {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, #f8fafc 100%);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Component Reference</h1>
+        <p class="subtitle">Design system and reusable components for the Reservation System</p>
+
+        <!-- Colors -->
+        <div class="section">
+            <h2 class="section-title">Color Palette</h2>
+            <div class="component-grid">
+                <div class="color-box" style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);">
+                    Primary
+                </div>
+                <div class="color-box" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    Success
+                </div>
+                <div class="color-box" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    Danger
+                </div>
+                <div class="color-box" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    Warning
+                </div>
+                <div class="color-box" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    Info
+                </div>
+                <div class="color-box" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+                    Dark
+                </div>
+            </div>
+            <div class="code-block">
+--primary-color: #4f46e5;
+--success-color: #10b981;
+--danger-color: #ef4444;
+--warning-color: #f59e0b;
+--info-color: #3b82f6;
+--dark-color: #1e293b;
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="section">
+            <h2 class="section-title">Status Badges</h2>
+            <div>
+                <span class="badge badge-pending">Pending</span>
+                <span class="badge badge-approved">Approved</span>
+                <span class="badge badge-active">Active</span>
+                <span class="badge badge-finished">Finished</span>
+                <span class="badge badge-refused">Refused</span>
+            </div>
+            <div class="code-block">
+&lt;span class="badge badge-pending"&gt;Pending&lt;/span&gt;
+&lt;span class="badge badge-approved"&gt;Approved&lt;/span&gt;
+&lt;span class="badge badge-active"&gt;Active&lt;/span&gt;
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="section">
+            <h2 class="section-title">Buttons</h2>
+            <div>
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-success">Success Button</button>
+                <button class="btn btn-danger">Danger Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+            </div>
+            <div class="code-block">
+&lt;button class="btn btn-primary"&gt;Primary Button&lt;/button&gt;
+&lt;button class="btn btn-success"&gt;Success Button&lt;/button&gt;
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="section">
+            <h2 class="section-title">Statistics Cards</h2>
+            <div class="component-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Active Reservations</div>
+                    <div class="stat-value">24</div>
+                    <div style="color: #10b981; font-weight: 600;">↑ 12% this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Resources</div>
+                    <div class="stat-value">175</div>
+                    <div style="color: #64748b; font-weight: 600;">All categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Open Incidents</div>
+                    <div class="stat-value">12</div>
+                    <div style="color: #ef4444; font-weight: 600;">↑ 3 new today</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="section">
+            <h2 class="section-title">Typography</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Size</th>
+                        <th>Weight</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Page Title (H1)</td>
+                        <td>2.5rem (40px)</td>
+                        <td>700</td>
+                        <td><strong style="font-size: 1.5rem;">Dashboard</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Section Title (H2)</td>
+                        <td>1.75rem (28px)</td>
+                        <td>700</td>
+                        <td><strong style="font-size: 1.25rem;">Statistics</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Card Title</td>
+                        <td>1.25rem (20px)</td>
+                        <td>700</td>
+                        <td><strong>Resource Name</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Body Text</td>
+                        <td>1rem (16px)</td>
+                        <td>400</td>
+                        <td>Regular paragraph text</td>
+                    </tr>
+                    <tr>
+                        <td>Small Text</td>
+                        <td>0.875rem (14px)</td>
+                        <td>400</td>
+                        <td><small>Secondary information</small></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Spacing -->
+        <div class="section">
+            <h2 class="section-title">Spacing Scale</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Value</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>xs</td>
+                        <td>0.25rem (4px)</td>
+                        <td>Tight spacing</td>
+                    </tr>
+                    <tr>
+                        <td>sm</td>
+                        <td>0.5rem (8px)</td>
+                        <td>Small gaps</td>
+                    </tr>
+                    <tr>
+                        <td>md</td>
+                        <td>1rem (16px)</td>
+                        <td>Default spacing</td>
+                    </tr>
+                    <tr>
+                        <td>lg</td>
+                        <td>1.5rem (24px)</td>
+                        <td>Section spacing</td>
+                    </tr>
+                    <tr>
+                        <td>xl</td>
+                        <td>2rem (32px)</td>
+                        <td>Large sections</td>
+                    </tr>
+                    <tr>
+                        <td>2xl</td>
+                        <td>3rem (48px)</td>
+                        <td>Page sections</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Shadows -->
+        <div class="section">
+            <h2 class="section-title">Shadows</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 1.5rem;">
+                <div style="padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
+                    <strong>Shadow SM</strong>
+                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">Subtle elevation</p>
+                </div>
+                <div style="padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <strong>Shadow MD</strong>
+                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">Default cards</p>
+                </div>
+                <div style="padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                    <strong>Shadow LG</strong>
+                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">Prominent elements</p>
+                </div>
+                <div style="padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+                    <strong>Shadow XL</strong>
+                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">Modals & dropdowns</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Border Radius -->
+        <div class="section">
+            <h2 class="section-title">Border Radius</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                <div style="background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; padding: 1.5rem; border-radius: 6px; text-align: center;">
+                    <strong>6px</strong><br>
+                    <small>Buttons</small>
+                </div>
+                <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                    <strong>8px</strong><br>
+                    <small>Inputs</small>
+                </div>
+                <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 1.5rem; border-radius: 12px; text-align: center;">
+                    <strong>12px</strong><br>
+                    <small>Cards</small>
+                </div>
+                <div style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 1.5rem; border-radius: 16px; text-align: center;">
+                    <strong>16px</strong><br>
+                    <small>Sections</small>
+                </div>
+                <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 1.5rem; border-radius: 50px; text-align: center;">
+                    <strong>50px</strong><br>
+                    <small>Pills/Badges</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Icons -->
+        <div class="section">
+            <h2 class="section-title">Icon Usage (Emoji)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Context</th>
+                        <th>Icon</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Dashboard</td><td>📊</td><td>Statistics, analytics</td></tr>
+                    <tr><td>User</td><td>👤 👥</td><td>User profile, team</td></tr>
+                    <tr><td>Notifications</td><td>🔔</td><td>Alerts, messages</td></tr>
+                    <tr><td>Success</td><td>✓ ✅ 🎉</td><td>Completion, approval</td></tr>
+                    <tr><td>Warning</td><td>⚠️ ⏰</td><td>Alerts, deadlines</td></tr>
+                    <tr><td>Error</td><td>✕ ❌</td><td>Failures, rejections</td></tr>
+                    <tr><td>Resources</td><td>💻 🖥️ 💽</td><td>Computers, servers</td></tr>
+                    <tr><td>Settings</td><td>⚙️</td><td>Configuration</td></tr>
+                    <tr><td>Search</td><td>🔍</td><td>Search functionality</td></tr>
+                    <tr><td>Time</td><td>🕐 ⏳</td><td>Timestamps, duration</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Chart Colors -->
+        <div class="section">
+            <h2 class="section-title">Chart Color Palette</h2>
+            <div class="component-grid">
+                <div class="color-box" style="background: rgba(79, 70, 229, 0.8);">Chart 1</div>
+                <div class="color-box" style="background: rgba(16, 185, 129, 0.8);">Chart 2</div>
+                <div class="color-box" style="background: rgba(245, 158, 11, 0.8);">Chart 3</div>
+                <div class="color-box" style="background: rgba(59, 130, 246, 0.8);">Chart 4</div>
+                <div class="color-box" style="background: rgba(239, 68, 68, 0.8);">Chart 5</div>
+                <div class="color-box" style="background: rgba(100, 116, 139, 0.8);">Chart 6</div>
+            </div>
+            <div class="code-block">
+backgroundColor: [
+    'rgba(79, 70, 229, 0.8)',   // Primary
+    'rgba(16, 185, 129, 0.8)',  // Success
+    'rgba(245, 158, 11, 0.8)',  // Warning
+    'rgba(59, 130, 246, 0.8)',  // Info
+    'rgba(239, 68, 68, 0.8)',   // Danger
+    'rgba(100, 116, 139, 0.8)'  // Secondary
+]
+            </div>
+        </div>
+
+        <!-- Breakpoints -->
+        <div class="section">
+            <h2 class="section-title">Responsive Breakpoints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Breakpoint</th>
+                        <th>Media Query</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mobile</td>
+                        <td>@media (max-width: 480px)</td>
+                        <td>Small phones</td>
+                    </tr>
+                    <tr>
+                        <td>Tablet</td>
+                        <td>@media (max-width: 768px)</td>
+                        <td>Tablets, large phones</td>
+                    </tr>
+                    <tr>
+                        <td>Laptop</td>
+                        <td>@media (max-width: 1024px)</td>
+                        <td>Small laptops</td>
+                    </tr>
+                    <tr>
+                        <td>Desktop</td>
+                        <td>Default (no media query)</td>
+                        <td>Large screens</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
