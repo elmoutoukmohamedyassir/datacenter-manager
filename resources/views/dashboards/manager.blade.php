@@ -1,8 +1,9 @@
-@extends('layouts.app')
-
-@section('title', 'Manager Dashboard')
-
-@section('styles')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Manager Dashboard') }}
+        </h2>
+    </x-slot>
 <style>
     .dashboard-header {
         display: flex;
@@ -337,9 +338,7 @@
         }
     }
 </style>
-@endsection
 
-@section('content')
 <div>
     <div class="dashboard-header">
         <div>
@@ -536,9 +535,7 @@
         </div>
     </div>
 </div>
-@endsection
 
-@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     // Chart.js default configuration
@@ -748,4 +745,4 @@
         });
     });
 </script>
-@endsection
+</x-app-layout> 

@@ -1,8 +1,9 @@
-@extends('layouts.app')
-
-@section('title', isset($resource) ? 'Edit Resource' : 'Add New Resource')
-
-@section('styles')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __($resource ? 'Edit Resource' : 'Add New Resource') }}
+        </h2>
+    </x-slot>
 <style>
     .form-container {
         max-width: 900px;
@@ -234,9 +235,7 @@
         font-size: 1.5rem;
     }
 </style>
-@endsection
 
-@section('content')
 <div class="form-container">
     <a href="{{ url()->previous() }}" class="back-link">
         ← Back
@@ -488,9 +487,7 @@
         </form>
     </div>
 </div>
-@endsection
 
-@section('scripts')
 <script>
     function handleSubmit(event) {
         event.preventDefault();
@@ -519,4 +516,4 @@
         // window.location.href = "{{ url('/resources/browse') }}";
     }
 </script>
-@endsection
+</x-app-layout>

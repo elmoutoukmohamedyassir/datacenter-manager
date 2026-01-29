@@ -1,8 +1,10 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Create New Reservation') }}
+        </h2>
+    </x-slot>
 
-@section('title', 'Create Reservation')
-
-@section('content')
 <div class="card">
     <div class="card-header">Create New Reservation</div>
 
@@ -169,4 +171,4 @@ document.addEventListener('DOMContentLoaded', function() {
     endDateInput.min = minDateTime;
 });
 </script>
-@endsection
+</x-app-layout>

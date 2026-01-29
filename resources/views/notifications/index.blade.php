@@ -1,8 +1,9 @@
-@extends('layouts.app')
-
-@section('title', 'Notifications')
-
-@section('styles')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Notifications') }}
+        </h2>
+    </x-slot>
 <style>
     .notifications-header {
         display: flex;
@@ -524,4 +525,4 @@
         });
     });
 </script>
-@endsection
+</x-app-layout>

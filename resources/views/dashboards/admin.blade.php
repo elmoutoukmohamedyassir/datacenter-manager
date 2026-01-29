@@ -1,8 +1,10 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Admin Dashboard') }}
+        </h2>
+    </x-slot>
 
-@section('title', 'Admin Dashboard')
-
-@section('styles')
 <style>
     .admin-header {
         background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -457,9 +459,7 @@
         }
     }
 </style>
-@endsection
 
-@section('content')
 <div>
     <!-- Admin Header -->
     <div class="admin-header">
@@ -786,9 +786,6 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     // Resource Management Functions
@@ -989,4 +986,4 @@
         }
     });
 </script>
-@endsection
+</x-app-layout>

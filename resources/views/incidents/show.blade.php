@@ -1,8 +1,9 @@
-@extends('layouts.app')
-
-@section('title', 'Incident Details')
-
-@section('content')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Incident Details') }}
+        </h2>
+    </x-slot>
 <div class="card">
     <div class="flex justify-between items-center" style="margin-bottom: 1.5rem;">
         <div class="card-header" style="margin: 0; padding: 0; border: none;">
@@ -75,4 +76,4 @@
         <a href="{{ route('incidents.index') }}" class="btn btn-secondary">Back to Incidents</a>
     </div>
 </div>
-@endsection
+</x-app-layout>

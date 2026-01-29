@@ -1,8 +1,10 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('User Dashboard') }}
+        </h2>
+    </x-slot>
 
-@section('title', 'User Dashboard')
-
-@section('styles')
 <style>
     .dashboard-grid {
         display: grid;
@@ -210,9 +212,6 @@
         }
     }
 </style>
-@endsection
-
-@section('content')
 <div>
     <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
         👋 Welcome back, {{ Auth::user()->first_name }}!
@@ -364,9 +363,7 @@
         </ul>
     </div>
 </div>
-@endsection
 
-@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     // Trend Chart
@@ -487,4 +484,4 @@
         }
     });
 </script>
-@endsection
+</x-app-layout>
