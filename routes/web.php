@@ -23,3 +23,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+
+
+
+use App\Http\Controllers\ReservationController;
+
+// Grouping these under 'auth' ensures only logged-in users can access them
+Route::middleware(['auth'])->group(function () {
+    
+    // Page to see all reservations (Manager View)
+    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+
+    // Action to submit a new reservation (User Action)
+    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+
+    // Action to approve/reject a reservation (Manager Action)
+    Route::put('/reservations/{id}', [ReservationController::class, 'updateStatus'])->name('reservations.update');
+    
+});
