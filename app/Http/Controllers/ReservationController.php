@@ -1,78 +1,63 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers;use App\Models\Reservation;
+use App\Models\Resource;
+use Illuminate\Http\Request;use Illuminate\Support\Facades\Auth;
 
-use Illuminate\Http\Request;
-use App\Models\Reservation;
-use Illuminate\Support\Facades\Auth;
-
-class ReservationController extends Controller
-{
+class ReservationController extends Controller{
     /**
-     * Display a listing of reservations for the Manager.
+     * Display a listing of the reservations (Manager View).
      */
     public function index()
     {
-        // Load reservations with User and Resource details
+        // We use 'with' to get user and resource names to avoid errors in the view
         $reservations = Reservation::with(['user', 'resource'])->get();
         return view('reservations.index', compact('reservations'));
     }
 
     /**
-     * Store a new reservation request (The User's part).
+     * Show the form for creating a new reservation.
      */
-    public function store(Request $request)
+    public function create()
     {
-        // 1. Validation using your exact model names
+        // This is the GET method the browser is looking for
+        $resources = Resource::all();
+        return view('reservations.create', compact('resources'));
+    }
+
+    /**
+     * Store a newly created reservation in storage (User Action).
+     */
+    public function store(Request $request){
         $request->validate([
             'resource_id'   => 'required|exists:resources,id',
             'start_time'    => 'required|date|after:now',
             'end_time'      => 'required|date|after:start_time',
-            'justification' => 'required|string|min:5',
+            'justification' => 'required|string|min:10',
         ]);
 
-        // 2. Flawless Check: Prevent double-booking for the same resource
-        $overlap = Reservation::where('resource_id', $request->resource_id)
-            ->where('status', 'approved')
-            ->where(function ($query) use ($request) {
-                $query->whereBetween('start_time', [$request->start_time, $request->end_time])
-                      ->orWhereBetween('end_time', [$request->start_time, $request->end_time]);
-            })->exists();
-
-        if ($overlap) {
-            return back()->with('error', 'This resource is already reserved for the selected time.');
-        }
-
-        // 3. Create the record
-        Reservation::create([
-            'user_id'       => Auth::id(),
+        Reservation::create(['user_id'       => Auth::id(),
             'resource_id'   => $request->resource_id,
             'start_time'    => $request->start_time,
             'end_time'      => $request->end_time,
             'justification' => $request->justification,
-            'status'        => 'pending', // Starts as pending for Role 3
+            'status'        => 'pending',
         ]);
 
-        return back()->with('success', 'Reservation request sent successfully!');
+        return redirect()->route('reservations.index')->with('success', 'Reservation requested successfully!');
     }
 
     /**
-     * Update the status (The Manager's part).
+     * Update the status of a reservation (Manager Action).
      */
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status'     => 'required|in:approved,rejected',
-            'admin_note' => 'required|string',
-        ]);
-
+    public function updateStatus(Request $request, $id){
         $reservation = Reservation::findOrFail($id);
         
         $reservation->update([
-            'status'     => $request->status,
+            'status'     => $request->status, // 'approved' or 'rejected'
             'admin_note' => $request->admin_note,
         ]);
 
-        return back()->with('success', 'Reservation has been ' . $request->status . '.');
+        return back()->with('success', 'Reservation status updated!');
     }
 }

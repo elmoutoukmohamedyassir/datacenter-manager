@@ -1,31 +1,60 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+<<<<<<< HEAD
             {{ __('Create New Reservation') }}
         </h2>
     </x-slot>
 
 <div class="card">
     <div class="card-header">Create New Reservation</div>
+=======
+            {{ __('New Reservation Request') }}
+        </h2>
+    </x-slot>
 
-    <form action="{{ route('reservations.store') }}" method="POST" id="reservationForm">
-        @csrf
+    <div class="py-12">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8">
+                
+                @if(session('error'))
+                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">{{ session('error') }}</div>
+                @endif
 
-        <div class="form-group">
-            <label for="resource_id">Resource *</label>
-            <select name="resource_id" id="resource_id" required>
-                <option value="">Select a resource</option>
-                @foreach($resources as $resource)
-                    <option value="{{ $resource->id }}" data-resource="{{ json_encode($resource) }}" {{ old('resource_id') == $resource->id ? 'selected' : '' }}>
-                        {{ $resource->name }} - {{ $resource->category->name }}
-                        (CPU: {{ $resource->cpu }}, RAM: {{ $resource->ram }}GB, Storage: {{ $resource->storage }}GB)
-                    </option>
-                @endforeach
-            </select>
-            @error('resource_id')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
+                <form action="{{ route('reservations.store') }}" method="POST">
+                    @csrf
+                    
+                    <div class="mb-4">
+                        <x-input-label for="resource_id" value="Resource ID (Server)" />
+                        <x-text-input id="resource_id" name="resource_id" type="number" class="block mt-1 w-full" required />
+                    </div>
+>>>>>>> feat/logic/reservation-system
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <x-input-label for="start_time" value="Start Time" />
+                            <x-text-input name="start_time" type="datetime-local" class="block mt-1 w-full" required />
+                        </div>
+                        <div>
+                            <x-input-label for="end_time" value="End Time" />
+                            <x-text-input name="end_time" type="datetime-local" class="block mt-1 w-full" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <x-input-label for="justification" value="Why do you need this resource?" />
+                        <textarea name="justification" rows="4" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required placeholder="Describe your project..."></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end">
+                        <x-primary-button>
+                            {{ __('Submit Reservation') }}
+                        </x-primary-button>
+                    </div>
+                </form>
+            </div>
         </div>
+<<<<<<< HEAD
 
         <div id="resourceDetails" style="display: none;" class="card" style="background-color: #f8f9fa; padding: 1rem; margin-bottom: 1.5rem;">
             <h3 style="margin-bottom: 0.5rem;">Resource Details</h3>
@@ -172,3 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </x-app-layout>
+=======
+    </div>
+</x-app-layout>
+>>>>>>> feat/logic/reservation-system
