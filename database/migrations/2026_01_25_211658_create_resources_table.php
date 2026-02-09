@@ -11,15 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resources', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('manager_id')->constrained('users')->onDelete('cascade');
-            $table->json('specifications');
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
+    Schema::create('resources', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('type'); // Added: To distinguish between 'Serveur', 'VM', 'Switch', etc.
+        $table->string('cpu')->nullable();
+        $table->string('ram')->nullable();
+        $table->string('os')->nullable();
+        $table->string('location')->nullable(); // Changed to lowercase 'location'
+        $table->foreignId('category_id')->constrained()->onDelete('cascade');
+        $table->foreignId('manager_id')->constrained('users')->onDelete('cascade');
+        $table->json('specifications')->nullable(); // Made nullable just in case
+        
+        // Added: Better for the 'Suivi détaillé' requirement
+        $table->enum('status', ['disponible', 'maintenance', 'indisponible'])->default('disponible');
+        
+        $table->boolean('is_active')->default(true); 
+        $table->timestamps();
+    });
     }
 
     /**
