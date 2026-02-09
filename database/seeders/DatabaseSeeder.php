@@ -12,9 +12,10 @@ class DatabaseSeeder extends Seeder
     {
         // Call our custom seeders in the correct order
         $this->call([
-            RoleSeeder::class,      // 1. Create Admin, Manager, User roles
-            UserSeeder::class,      // 2. Create the actual accounts assigned to those roles
-            CategorySeeder::class,  // 3. Create resource categories (Electronics, etc.)
+            RoleSeeder::class,
+            UserSeeder::class,
+            CategorySeeder::class,
+            ResourceSeeder::class, // ADD THIS LINE LAST
         ]);
     }
 }
