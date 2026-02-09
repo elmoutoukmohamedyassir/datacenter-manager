@@ -8,12 +8,27 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['name', 'email', 'password', 'role_id', 'is_active'];
-    protected $casts = [
-        'password' => 'hashed',
-        'is_active' => 'boolean'
-    ]; # Whenever we store a password it's automatically hashed and the same for is_active automatically turned into a boolean.
-    public function role() {
-        return $this->belongsTo(Role::class);
+    use HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name', 'email', 'password', 'role', 'role_id', 'is_active'
+    ];
+
+    // Helper to check if user is Admin
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    // Helper to check if user is Manager
+    public function isManager()
+    {
+        return $this->role === 'manager';
+    }
+
+    // Helper to check if user is Technician
+    public function isTechnician()
+    {
+        return $this->role === 'technician';
     }
 }
