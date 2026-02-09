@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Resource;
 use App\Models\Category;
 use App\Models\User;
-
 use Illuminate\Http\Request;
 
 class ResourceController extends Controller
@@ -15,7 +14,6 @@ class ResourceController extends Controller
      */
     public function index()
     {
-        //
         $resources = Resource::with(['category', 'manager'])->get();
         return view('resources.index', compact('resources'));
     }
@@ -25,10 +23,9 @@ class ResourceController extends Controller
      */
     public function create()
     {
-        //
         $categories = Category::all();
         $managers = User::where('is_active', true)->get();
-        return view('resources.create', compact($categories, $managers));
+        return view('resources.create', compact('categories', 'managers'));
     }
 
     /**
@@ -36,7 +33,6 @@ class ResourceController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -47,8 +43,7 @@ class ResourceController extends Controller
 
         Resource::create($validatedData);
 
-        return redirect()->route('resources.index')
-            ->with('success', 'Resource created successfully.');
+        return redirect()->route('resources.index')->with('success', 'Resource created.');
     }
 
     /**
@@ -56,7 +51,8 @@ class ResourceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $resource = Resource::with(['category', 'manager'])->findOrFail($id);
+        return view('resources.show', compact('resource'));
     }
 
     /**
@@ -64,7 +60,6 @@ class ResourceController extends Controller
      */
     public function edit(string $id)
     {
-        //
         $resource = Resource::findOrFail($id);
         $categories = Category::all();
         $managers = User::where('is_active', true)->get();
@@ -76,7 +71,6 @@ class ResourceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -96,9 +90,8 @@ class ResourceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
         $resource = Resource::findOrFail($id);
         $resource->delete();
         return redirect()->route('resources.index')->with('success', 'Resource deleted successfully');
     }
-}
+} // This curly bracket must be at the VERY end

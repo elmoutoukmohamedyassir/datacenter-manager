@@ -18,8 +18,9 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Super Admin',
             'email' => 'admin@datacenter.com',
-            'password' => Hash::make('password'), // Password is 'password'
-            'role_id' => 1, // Points to 'admin' role
+            'password' => Hash::make('password'),
+            'role_id' => 1,
+            'role' => 'admin', // Add this line
             'is_active' => true,
         ]);
 
