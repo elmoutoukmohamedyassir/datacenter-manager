@@ -13,10 +13,10 @@ class ResourceController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $resources = Resource::with(['category', 'manager'])->get();
-        return view('resources.index', compact('resources'));
-    }
+{
+    $resources = \App\Models\Resource::with('category')->get();
+    return view('resources.index', compact('resources'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -94,4 +94,4 @@ class ResourceController extends Controller
         $resource->delete();
         return redirect()->route('resources.index')->with('success', 'Resource deleted successfully');
     }
-} // This curly bracket must be at the VERY end
+} 
