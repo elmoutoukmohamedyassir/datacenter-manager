@@ -1,125 +1,37 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Reservation Details') }}
-        </h2>
-    </x-slot>
-<div class="card">
-    <div class="flex justify-between items-center" style="margin-bottom: 1.5rem;">
-        <div class="card-header" style="margin: 0; padding: 0; border: none;">
-            Reservation #{{ $reservation->id }}
+    <header style="margin-bottom: 30px;">
+        <a href="{{ route('reservations.index') }}" style="color: #64748b; text-decoration: none; font-size: 14px;">← Back to Logs</a>
+        <h1 style="margin-top: 10px;">Reservation #{{ $reservation->id }}</h1>
+    </header>
+
+    <div style="max-width: 800px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px;">
+        <div style="background: white; padding: 30px; border-radius: 15px; border: 1px solid #e2e8f0;">
+            <h3 style="margin-top: 0; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">Hardware Information</h3>
+            <div style="margin-top: 20px;">
+                <p style="color: #64748b; margin: 0; font-size: 13px;">Resource Name</p>
+                <p style="font-weight: 700; font-size: 18px; margin: 5px 0 20px 0;">{{ $reservation->resource->name }}</p>
+                
+                <p style="color: #64748b; margin: 0; font-size: 13px;">Technical Category</p>
+                <p style="font-weight: 600; margin: 5px 0 20px 0;">{{ $reservation->resource->category->name ?? 'Uncategorized' }}</p>
+                
+                <p style="color: #64748b; margin: 0; font-size: 13px;">Usage Window</p>
+                <p style="font-weight: 600; margin: 5px 0 0 0;">{{ $reservation->start_date }} to {{ $reservation->end_date }}</p>
+            </div>
         </div>
-        <span class="badge badge-{{ $reservation->status }}" style="font-size: 1rem; padding: 0.5rem 1rem;">
-            {{ ucfirst($reservation->status) }}
-        </span>
-    </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div>
-            <h3 style="margin-bottom: 1rem; color: #495057;">Reservation Details</h3>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>User:</strong> {{ $reservation->user->first_name }} {{ $reservation->user->last_name }}
-            </p>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>Email:</strong> {{ $reservation->user->email }}
-            </p>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>Start Date:</strong> {{ $reservation->start_date->format('F d, Y - H:i') }}
-            </p>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>End Date:</strong> {{ $reservation->end_date->format('F d, Y - H:i') }}
-            </p>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>Duration:</strong> {{ $reservation->start_date->diffInDays($reservation->end_date) }} days
-            </p>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>Created:</strong> {{ $reservation->created_at->format('F d, Y - H:i') }}
-            </p>
-
-            @if($reservation->justification)
-                <div style="margin-top: 1.5rem;">
-                    <strong>Justification:</strong>
-                    <p style="margin-top: 0.5rem; padding: 1rem; background-color: #f8f9fa; border-radius: 4px;">
-                        {{ $reservation->justification }}
-                    </p>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="background: white; padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0;">
+                <h3 style="margin: 0 0 15px 0; font-size: 16px;">Request Status</h3>
+                <div style="text-align: center; padding: 20px; border-radius: 10px; background: #f8fafc; font-weight: 800; font-size: 20px; text-transform: uppercase; border: 1px dashed #cbd5e1;">
+                    {{ $reservation->status }}
                 </div>
-            @endif
-        </div>
+            </div>
 
-        <div>
-            <h3 style="margin-bottom: 1rem; color: #495057;">Resource Details</h3>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>Name:</strong> {{ $reservation->resource->name }}
-            </p>
-
-            <p style="margin-bottom: 0.75rem;">
-                <strong>Category:</strong> {{ $reservation->resource->category->name }}
-            </p>
-
-            @if($reservation->resource->cpu)
-                <p style="margin-bottom: 0.75rem;">
-                    <strong>CPU:</strong> {{ $reservation->resource->cpu }} cores
-                </p>
-            @endif
-
-            @if($reservation->resource->ram)
-                <p style="margin-bottom: 0.75rem;">
-                    <strong>RAM:</strong> {{ $reservation->resource->ram }} GB
-                </p>
-            @endif
-
-            @if($reservation->resource->storage)
-                <p style="margin-bottom: 0.75rem;">
-                    <strong>Storage:</strong> {{ $reservation->resource->storage }} GB
-                </p>
-            @endif
-
-            @if($reservation->resource->os)
-                <p style="margin-bottom: 0.75rem;">
-                    <strong>Operating System:</strong> {{ $reservation->resource->os }}
-                </p>
-            @endif
-
-            @if($reservation->resource->location)
-                <p style="margin-bottom: 0.75rem;">
-                    <strong>Location:</strong> {{ $reservation->resource->location }}
-                </p>
-            @endif
+            <div style="background: #0f172a; color: white; padding: 25px; border-radius: 15px;">
+                <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #94a3b8;">Requested By</h3>
+                <p style="margin: 0; font-weight: 700;">{{ $reservation->user->name }}</p>
+                <p style="margin: 5px 0 0 0; font-size: 13px; color: #94a3b8;">{{ $reservation->user->email }}</p>
+            </div>
         </div>
     </div>
-
-    @if(Auth::user()->isManager() && $reservation->status === 'pending')
-        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
-            <h3 style="margin-bottom: 1rem;">Manager Actions</h3>
-            <form action="{{ route('reservations.update', $reservation) }}" method="POST" style="display: inline;">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="action" value="approve">
-                <button type="submit" class="btn btn-success">Approve Reservation</button>
-            </form>
-
-            <form action="{{ route('reservations.update', $reservation) }}" method="POST" style="display: inline;">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="action" value="refuse">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to refuse this reservation?')">
-                    Refuse Reservation
-                </button>
-            </form>
-        </div>
-    @endif
-
-    <div style="margin-top: 2rem;">
-        <a href="{{ Auth::user()->isManager() && $reservation->status === 'pending' ? route('reservations.pending') : route('reservations.index') }}" class="btn btn-secondary">
-            Back to List
-        </a>
-    </div>
-</div>
 </x-app-layout>

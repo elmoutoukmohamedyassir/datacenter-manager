@@ -1,88 +1,80 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Reservations Management') }}
-            </h2>
-            <a href="{{ route('reservations.create') }}" style="background: #4f46e5; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.875rem;">
-                + New Reservation
-            </a>
+    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h1>Reservations</h1>
+            <p style="color: #64748b; font-size: 14px;">Manage and monitor data center resource allocations.</p>
         </div>
-    </x-slot>
+        <a href="{{ route('reservations.create') }}" style="background: #4f46e5; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">+ Request Hardware</a>
+    </header>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
-                
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background-color: #f9fafb; border-bottom: 2px solid #e5e7eb; text-align: left;">
-                            <th style="padding: 12px; color: #4b5563; font-size: 0.75rem; text-transform: uppercase;">Resource</th>
-                            <th style="padding: 12px; color: #4b5563; font-size: 0.75rem; text-transform: uppercase;">User</th>
-                            <th style="padding: 12px; color: #4b5563; font-size: 0.75rem; text-transform: uppercase;">Period</th>
-                            <th style="padding: 12px; color: #4b5563; font-size: 0.75rem; text-transform: uppercase;">Status</th>
-                            @if(auth()->user()->isAdmin() || auth()->user()->isManager())
-                                <th style="padding: 12px; color: #4b5563; font-size: 0.75rem; text-transform: uppercase;">Actions</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($reservations as $reservation)
-                            <tr style="border-bottom: 1px solid #f3f4f6; hover: background-color: #f9fafb;">
-                                <td style="padding: 12px; font-weight: 500;">{{ $reservation->resource->name }}</td>
-                                <td style="padding: 12px;">{{ $reservation->user->name }}</td>
-                                <td style="padding: 12px; font-size: 0.85rem; color: #6b7280;">
-                                    <span style="display: block;">{{ $reservation->start_date }}</span>
-                                    <span style="font-size: 0.75rem; color: #9ca3af;">to</span>
-                                    <span style="display: block;">{{ $reservation->end_date }}</span>
-                                </td>
-                                <td style="padding: 12px;">
-                                    @php
-                                        $statusStyles = [
-                                            'approved' => 'background: #dcfce7; color: #166534;',
-                                            'rejected' => 'background: #fee2e2; color: #991b1b;',
-                                            'pending'  => 'background: #fef3c7; color: #92400e;'
-                                        ];
-                                        $style = $statusStyles[$reservation->status] ?? $statusStyles['pending'];
-                                    @endphp
-                                    <span style="padding: 4px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; {{ $style }}">
-                                        {{ $reservation->status }}
-                                    </span>
-                                </td>
-
-                                @if(auth()->user()->isAdmin() || auth()->user()->isManager())
-                                    <td style="padding: 12px;">
-                                        <div style="display: flex; gap: 10px;">
-                                            @if($reservation->status !== 'approved')
-                                            <form action="{{ route('reservations.update', $reservation->id) }}" method="POST">
-                                                @csrf @method('PUT')
-                                                <input type="hidden" name="status" value="approved">
-                                                <button style="color: #059669; background: none; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 600;">Approve</button>
-                                            </form>
-                                            @endif
-
-                                            @if($reservation->status !== 'rejected')
-                                            <form action="{{ route('reservations.update', $reservation->id) }}" method="POST">
-                                                @csrf @method('PUT')
-                                                <input type="hidden" name="status" value="rejected">
-                                                <button style="color: #dc2626; background: none; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 600;">Reject</button>
-                                            </form>
-                                            @endif
-                                        </div>
-                                    </td>
-                                @endif
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" style="padding: 40px; text-align: center; color: #9ca3af;">
-                                    No reservations found.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-
-            </div>
+    @if((Auth::user()->isManager() || Auth::user()->isAdmin()) && $reservations->where('status', 'pending')->count() > 0)
+    <div style="margin-bottom: 40px;">
+        <h3 style="font-size: 16px; color: #f59e0b; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+            <span style="width: 8px; height: 8px; background: #f59e0b; border-radius: 50%;"></span>
+            Pending Approval Required
+        </h3>
+        <div style="background: white; border-radius: 12px; border: 1px solid #fde68a; overflow: hidden; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.05);">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tbody style="font-size: 14px;">
+                    @foreach($reservations->where('status', 'pending') as $res)
+                    <tr style="border-bottom: 1px solid #fef3c7;">
+                        <td style="padding: 15px 20px;">
+                            <div style="font-weight: 700;">{{ $res->resource->name }}</div>
+                            <div style="font-size: 12px; color: #64748b;">Requested by {{ $res->user->name }}</div>
+                        </td>
+                        <td style="padding: 15px 20px; color: #64748b;">{{ $res->start_date }} to {{ $res->end_date }}</td>
+                        <td style="padding: 15px 20px; text-align: right;">
+                            <form action="{{ route('reservations.update', $res->id) }}" method="POST" style="display: inline-block;">
+                                @csrf @method('PUT')
+                                <input type="hidden" name="status" value="approved">
+                                <button style="background: #10b981; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px;">Approve</button>
+                            </form>
+                            <form action="{{ route('reservations.update', $res->id) }}" method="POST" style="display: inline-block;">
+                                @csrf @method('PUT')
+                                <input type="hidden" name="status" value="rejected">
+                                <button style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+    </div>
+    @endif
+
+    <h3 style="font-size: 16px; margin-bottom: 15px;">Reservation History</h3>
+    <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <tr>
+                    <th style="padding: 15px 20px; font-size: 12px; color: #64748b; text-transform: uppercase;">Resource</th>
+                    <th style="padding: 15px 20px; font-size: 12px; color: #64748b; text-transform: uppercase;">Period</th>
+                    <th style="padding: 15px 20px; font-size: 12px; color: #64748b; text-transform: uppercase;">Status</th>
+                    <th style="padding: 15px 20px; font-size: 12px; color: #64748b; text-transform: uppercase; text-align: right;">Details</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 14px;">
+                @foreach($reservations as $res)
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 15px 20px;">
+                        <div style="font-weight: 600;">{{ $res->resource->name }}</div>
+                        @if(Auth::user()->isAdmin()) <div style="font-size: 11px; color: #94a3b8;">User: {{ $res->user->name }}</div> @endif
+                    </td>
+                    <td style="padding: 15px 20px; color: #64748b;">{{ $res->start_date }} - {{ $res->end_date }}</td>
+                    <td style="padding: 15px 20px;">
+                        <span style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; 
+                            background: {{ $res->status == 'approved' ? '#dcfce7' : ($res->status == 'rejected' ? '#fee2e2' : '#fef9c3') }}; 
+                            color: {{ $res->status == 'approved' ? '#166534' : ($res->status == 'rejected' ? '#991b1b' : '#854d0e') }};">
+                            {{ $res->status }}
+                        </span>
+                    </td>
+                    <td style="padding: 15px 20px; text-align: right;">
+                        <a href="{{ route('reservations.show', $res->id) }}" style="color: #4f46e5; text-decoration: none; font-weight: 600; font-size: 13px;">View Details</a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </x-app-layout>

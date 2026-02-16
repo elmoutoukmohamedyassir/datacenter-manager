@@ -13,10 +13,27 @@ class ResourceController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-{
-    $resources = \App\Models\Resource::with('category')->get();
-    return view('resources.index', compact('resources'));
-}
+    {
+        $resources = Resource::with('category')->get();
+        return view('resources.index', compact('resources'));
+    }
+
+    /**
+     * NEW: Toggle Hardware Maintenance Status
+     */
+    public function toggleMaintenance($id)
+    {
+        // Security: Only Techs or Admins can toggle status
+        if (!auth()->user()->isAdmin() && !auth()->user()->isTechnician()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $resource = Resource::findOrFail($id);
+        $resource->is_active = !$resource->is_active; // Flips 1 to 0 or 0 to 1
+        $resource->save();
+
+        return back()->with('success', 'Hardware status updated.');
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -24,7 +41,8 @@ class ResourceController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $managers = User::where('is_active', true)->get();
+        // Just getting all users who could manage, or you could filter by role 'manager'
+        $managers = User::all(); 
         return view('resources.create', compact('categories', 'managers'));
     }
 
@@ -37,7 +55,6 @@ class ResourceController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'manager_id' => 'required|exists:users,id',
-            'specifications' => 'nullable|array',
             'is_active' => 'boolean',
         ]);
 
@@ -51,7 +68,7 @@ class ResourceController extends Controller
      */
     public function show(string $id)
     {
-        $resource = Resource::with(['category', 'manager'])->findOrFail($id);
+        $resource = Resource::with(['category'])->findOrFail($id);
         return view('resources.show', compact('resource'));
     }
 
@@ -62,7 +79,7 @@ class ResourceController extends Controller
     {
         $resource = Resource::findOrFail($id);
         $categories = Category::all();
-        $managers = User::where('is_active', true)->get();
+        $managers = User::all();
         return view('resources.edit', compact('resource', 'categories', 'managers'));
     }
 
@@ -75,14 +92,13 @@ class ResourceController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'manager_id' => 'required|exists:users,id',
-            'specifications' => 'nullable|array',
             'is_active' => 'boolean',
         ]);
 
         $resource = Resource::findOrFail($id);
         $resource->update($validatedData);
 
-        return redirect()->route('resources.index')->with('success', 'Resource updated successfully');
+        return redirect()->route('resources.index')->with('success', 'Resource updated.');
     }
 
     /**
@@ -92,6 +108,6 @@ class ResourceController extends Controller
     {
         $resource = Resource::findOrFail($id);
         $resource->delete();
-        return redirect()->route('resources.index')->with('success', 'Resource deleted successfully');
+        return redirect()->route('resources.index')->with('success', 'Resource deleted.');
     }
-} 
+}
