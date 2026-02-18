@@ -1,34 +1,38 @@
 <?php
 
-namespace App\Http\Controllers;use App\Models\Reservation;
+namespace App\Http\Controllers;
+
+use App\Models\Reservation;
 use App\Models\Resource;
-use Illuminate\Http\Request;use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
-class ReservationController extends Controller{
-    /**
-     * Display a listing of the reservations (Manager View).
-     */
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class ReservationController extends Controller
+{
     public function index()
-    {
-        // We use 'with' to get user and resource names to avoid errors in the view
-        $reservations = Reservation::with(['user', 'resource'])->get();
-        return view('reservations.index', compact('reservations'));
+{
+    $user = Auth::user();
+    
+    // IF ADMIN/MANAGER: Get EVERY reservation in the system
+    if ($user->isAdmin() || $user->isManager()) {
+        $reservations = Reservation::with(['user', 'resource'])->latest()->get();
+    } else {
+        // IF USER: Only get THEIR reservations
+        $reservations = Reservation::where('user_id', $user->id)->with('resource')->latest()->get();
     }
 
-    /**
-     * Show the form for creating a new reservation.
-     */
+    return view('reservations.index', compact('reservations'));
+}
+
     public function create()
     {
-        // This is the GET method the browser is looking for
-        $resources = Resource::all();
+        $resources = Resource::where('is_active', true)->get();
         return view('reservations.create', compact('resources'));
     }
 
-    /**
-     * Store a newly created reservation in storage (User Action).
-     */
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'resource_id'   => 'required|exists:resources,id',
             'start_time'    => 'required|date|after:now',
@@ -36,7 +40,20 @@ class ReservationController extends Controller{
             'justification' => 'required|string|min:10',
         ]);
 
-        Reservation::create(['user_id'       => Auth::id(),
+        // AUTOMATIC CONFLICT CHECK (Requirement: Gestion des conflits)
+        $overlap = Reservation::where('resource_id', $request->resource_id)
+            ->whereIn('status', ['approved', 'active'])
+            ->where(function ($query) use ($request) {
+                $query->whereBetween('start_time', [$request->start_time, $request->end_time])
+                      ->orWhereBetween('end_time', [$request->start_time, $request->end_time]);
+            })->exists();
+
+        if ($overlap) {
+            return back()->withInput()->with('error', 'Conflict Detected: This resource is already booked for this timeframe.');
+        }
+
+        Reservation::create([
+            'user_id'       => Auth::id(),
             'resource_id'   => $request->resource_id,
             'start_time'    => $request->start_time,
             'end_time'      => $request->end_time,
@@ -44,13 +61,10 @@ class ReservationController extends Controller{
             'status'        => 'pending',
         ]);
 
-        return redirect()->route('reservations.index')->with('success', 'Reservation requested successfully!');
+        return redirect()->route('reservations.index')->with('success', 'Reservation request submitted successfully!');
     }
 
-    /**
-     * Update the status of a reservation (Manager Action).
-     */
-        public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $id)
     {
         $reservation = Reservation::findOrFail($id);
         
@@ -59,15 +73,14 @@ class ReservationController extends Controller{
             'admin_note' => $request->admin_note,
         ]);
 
-        // --- ADD THIS PART FOR THE NOTIFICATION ---
-        \App\Models\Notification::create([
+        // SEND NOTIFICATION
+        Notification::create([
             'user_id' => $reservation->user_id,
             'title'   => 'Reservation ' . ucfirst($request->status),
             'message' => "Your request for {$reservation->resource->name} has been {$request->status}." . 
-                        ($request->admin_note ? " Note: " . $request->admin_note : ""),
+                         ($request->admin_note ? " Note: " . $request->admin_note : ""),
         ]);
-        // ------------------------------------------
 
-        return back()->with('success', 'Reservation status updated and user notified!');
+        return back()->with('success', 'Status updated and user notified!');
     }
 }
