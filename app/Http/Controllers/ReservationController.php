@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;use App\Models\Reservation;
 use App\Models\Resource;
 use Illuminate\Http\Request;use Illuminate\Support\Facades\Auth;
-
+use App\Models\Notification;
 class ReservationController extends Controller{
     /**
      * Display a listing of the reservations (Manager View).
@@ -50,14 +50,24 @@ class ReservationController extends Controller{
     /**
      * Update the status of a reservation (Manager Action).
      */
-    public function updateStatus(Request $request, $id){
+        public function updateStatus(Request $request, $id)
+    {
         $reservation = Reservation::findOrFail($id);
         
         $reservation->update([
-            'status'     => $request->status, // 'approved' or 'rejected'
+            'status'     => $request->status, 
             'admin_note' => $request->admin_note,
         ]);
 
-        return back()->with('success', 'Reservation status updated!');
+        // --- ADD THIS PART FOR THE NOTIFICATION ---
+        \App\Models\Notification::create([
+            'user_id' => $reservation->user_id,
+            'title'   => 'Reservation ' . ucfirst($request->status),
+            'message' => "Your request for {$reservation->resource->name} has been {$request->status}." . 
+                        ($request->admin_note ? " Note: " . $request->admin_note : ""),
+        ]);
+        // ------------------------------------------
+
+        return back()->with('success', 'Reservation status updated and user notified!');
     }
 }

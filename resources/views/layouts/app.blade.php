@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Base styles - Clean and human-readable */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #f8fafc;
@@ -19,11 +18,10 @@
             display: flex;
         }
 
-        /* Sidebar - The command center */
         .sidebar {
             width: 260px;
             height: 100vh;
-            background: #0f172a; /* Deep Navy */
+            background: #0f172a;
             color: #f1f5f9;
             position: fixed;
             display: flex;
@@ -46,7 +44,9 @@
         }
 
         .nav-item {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 12px 16px;
             color: #94a3b8;
             text-decoration: none;
@@ -67,7 +67,15 @@
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
-        /* Bottom section with user info */
+        .notification-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
         .sidebar-footer {
             padding: 20px;
             background: #1e293b;
@@ -102,11 +110,6 @@
             transition: background 0.2s;
         }
 
-        .logout-btn:hover {
-            background: #dc2626;
-        }
-
-        /* Main Content */
         .content {
             margin-left: 260px;
             width: 100%;
@@ -114,10 +117,15 @@
             box-sizing: border-box;
         }
 
-        header h1 {
-            margin: 0 0 30px 0;
-            font-size: 28px;
-            font-weight: 700;
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #bbf7d0;
+            font-weight: 600;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -129,9 +137,25 @@
         </div>
 
         <nav class="nav-links">
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-            <a href="{{ route('resources.index') }}" class="nav-item {{ request()->routeIs('resources.index') ? 'active' : '' }}">Resources</a>
-            <a href="{{ route('reservations.index') }}" class="nav-item {{ request()->routeIs('reservations.index') ? 'active' : '' }}">Reservations</a>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ route('resources.index') }}" class="nav-item {{ request()->routeIs('resources.index') ? 'active' : '' }}">
+                <span>Resources</span>
+            </a>
+            <a href="{{ route('reservations.index') }}" class="nav-item {{ request()->routeIs('reservations.index') ? 'active' : '' }}">
+                <span>Reservations</span>
+            </a>
+            
+            <a href="{{ route('notifications.index') }}" class="nav-item {{ request()->routeIs('notifications.index') ? 'active' : '' }}">
+                <span>Notifications</span>
+                @php 
+                    $unreadCount = Auth::user()->notifications()->where('is_read', false)->count(); 
+                @endphp
+                @if($unreadCount > 0)
+                    <span class="notification-badge">{{ $unreadCount }}</span>
+                @endif
+            </a>
         </nav>
 
         <div class="sidebar-footer">
@@ -146,6 +170,12 @@
     </aside>
 
     <main class="content">
+        @if(session('success'))
+            <div class="alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
         {{ $slot }}
     </main>
 

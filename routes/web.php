@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Redirect home to dashboard
 Route::get('/', function () {
@@ -26,7 +27,7 @@ Route::middleware('auth')->group(function () {
     // 2. Resource - General Viewing
     Route::get('/resources', [ResourceController::class, 'index'])->name('resources.index');
     
-    // 3. ADMIN ONLY ACTIONS (Must be ABOVE the {resource} detail route)
+    // 3. ADMIN ONLY ACTIONS
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/resources/create', [ResourceController::class, 'create'])->name('resources.create');
         Route::post('/resources', [ResourceController::class, 'store'])->name('resources.store');
@@ -36,7 +37,6 @@ Route::middleware('auth')->group(function () {
     });
 
     // 4. Resource - Specific Details & Maintenance
-    // (This must come after 'create' so 'create' isn't treated as an ID)
     Route::get('/resources/{resource}', [ResourceController::class, 'show'])->name('resources.show');
     Route::patch('/resources/{id}/maintenance', [ResourceController::class, 'toggleMaintenance'])->name('resources.maintenance');
 
@@ -45,6 +45,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
     Route::put('/reservations/{id}', [ReservationController::class, 'updateStatus'])->name('reservations.update');
+
+    // 6. Notifications System
+    Route::get('/notifications', function () {
+        $notifications = Auth::user()->notifications;
+        // Mark as read when they view the page
+        Auth::user()->notifications()->where('is_read', false)->update(['is_read' => true]);
+        return view('notifications.index', compact('notifications'));
+    })->name('notifications.index');
 });
 
 require __DIR__ . '/auth.php';
