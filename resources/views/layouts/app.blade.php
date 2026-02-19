@@ -110,6 +110,18 @@
             transition: background 0.2s;
         }
 
+        .login-btn-sidebar {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #6366f1;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
         .content {
             margin-left: 260px;
             width: 100%;
@@ -137,35 +149,46 @@
         </div>
 
         <nav class="nav-links">
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <span>Dashboard</span>
-            </a>
+            @auth
+                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <span>Dashboard</span>
+                </a>
+            @endauth
+
             <a href="{{ route('resources.index') }}" class="nav-item {{ request()->routeIs('resources.index') ? 'active' : '' }}">
                 <span>Resources</span>
             </a>
-            <a href="{{ route('reservations.index') }}" class="nav-item {{ request()->routeIs('reservations.index') ? 'active' : '' }}">
-                <span>Reservations</span>
-            </a>
-            
-            <a href="{{ route('notifications.index') }}" class="nav-item {{ request()->routeIs('notifications.index') ? 'active' : '' }}">
-                <span>Notifications</span>
-                @php 
-                    $unreadCount = Auth::user()->notifications()->where('is_read', false)->count(); 
-                @endphp
-                @if($unreadCount > 0)
-                    <span class="notification-badge">{{ $unreadCount }}</span>
-                @endif
-            </a>
+
+            @auth
+                <a href="{{ route('reservations.index') }}" class="nav-item {{ request()->routeIs('reservations.index') ? 'active' : '' }}">
+                    <span>Reservations</span>
+                </a>
+                
+                <a href="{{ route('notifications.index') }}" class="nav-item {{ request()->routeIs('notifications.index') ? 'active' : '' }}">
+                    <span>Notifications</span>
+                    @php 
+                        $unreadCount = Auth::user()->notifications()->where('is_read', false)->count(); 
+                    @endphp
+                    @if($unreadCount > 0)
+                        <span class="notification-badge">{{ $unreadCount }}</span>
+                    @endif
+                </a>
+            @endauth
         </nav>
 
         <div class="sidebar-footer">
-            <span class="user-name">{{ Auth::user()->name }}</span>
-            <span class="user-role">{{ Auth::user()->role }}</span>
-            
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="logout-btn">Log Out</button>
-            </form>
+            @auth
+                <span class="user-name">{{ Auth::user()->name }}</span>
+                <span class="user-role">{{ Auth::user()->role }}</span>
+                
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="logout-btn">Log Out</button>
+                </form>
+            @else
+                <span class="user-name">Guest Mode</span>
+                <a href="{{ route('login') }}" class="login-btn-sidebar">Login</a>
+            @endauth
         </div>
     </aside>
 

@@ -11,25 +11,31 @@ class ResourceController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * Accessible by guests and authenticated users.
      */
     public function index()
     {
+        // Eager load category to prevent N+1 query issues (Pro-tip for the prof!)
         $resources = Resource::with('category')->get();
-        return view('resources.index', compact('resources'));
+        
+        // This makes the 'Total managed assets' counter on your front-end live
+        $totalCount = $resources->count(); 
+        
+        return view('resources.index', compact('resources', 'totalCount'));
     }
 
     /**
-     * NEW: Toggle Hardware Maintenance Status
+     * Toggle Hardware Maintenance Status
      */
     public function toggleMaintenance($id)
     {
-        // Security: Only Techs or Admins can toggle status
+        // Logic remains the same: restrict to Admins or Techs
         if (!auth()->user()->isAdmin() && !auth()->user()->isTechnician()) {
             abort(403, 'Unauthorized action.');
         }
 
         $resource = Resource::findOrFail($id);
-        $resource->is_active = !$resource->is_active; // Flips 1 to 0 or 0 to 1
+        $resource->is_active = !$resource->is_active; 
         $resource->save();
 
         return back()->with('success', 'Hardware status updated.');
@@ -41,7 +47,6 @@ class ResourceController extends Controller
     public function create()
     {
         $categories = Category::all();
-        // Just getting all users who could manage, or you could filter by role 'manager'
         $managers = User::all(); 
         return view('resources.create', compact('categories', 'managers'));
     }
@@ -53,6 +58,7 @@ class ResourceController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string', 
             'category_id' => 'required|exists:categories,id',
             'manager_id' => 'required|exists:users,id',
             'is_active' => 'boolean',
@@ -90,6 +96,7 @@ class ResourceController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'manager_id' => 'required|exists:users,id',
             'is_active' => 'boolean',
