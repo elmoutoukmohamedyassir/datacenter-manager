@@ -10,14 +10,23 @@ class Resource extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'type', 'cpu', 'ram', 'os', 'location', 
-        'category_id', 'manager_id', 'specifications', 'status', 'is_active'
+        'name', 
+        'type', 
+        'category_id', 
+        'manager_id', 
+        'is_active',
+        'cpu', 
+        'ram', 
+        'os', 
+        'location', 
+        'specifications', 
+        'status'
     ];
 
-    // This converts the JSON from the DB into a PHP array automatically
     protected $casts = [
         'specifications' => 'array',
-        'is_active' => 'boolean',];
+        'is_active' => 'boolean',
+    ];
 
     public function category()
     {
@@ -28,4 +37,4 @@ class Resource extends Model
     {
         return $this->belongsTo(User::class, 'manager_id');
     }
-    }
+}
